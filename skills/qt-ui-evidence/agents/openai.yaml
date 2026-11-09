@@ -1,0 +1,3 @@
+interface:
+  display_name: "Qt UI Evidence"
+  short_description: "Verify Qt complaints with images and measurements"

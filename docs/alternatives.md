@@ -1,0 +1,26 @@
+# Existing options and the proposed contribution
+
+Reviewed on 2026-11-09. This is a bounded comparison of the listed sources, not a claim that no similar tool exists. All implementation and examples here are original; no upstream source is vendored.
+
+| Existing option | What it already provides | Remaining need for this complaint workflow |
+| --- | --- | --- |
+| [qt-testing in SLEAP](https://github.com/talmolab/sleap/tree/develop/.claude/skills/qt-testing) | Offscreen widget capture and screenshot inspection; coordinate lookup followed by direct control calls. | Its current helper sets a display attribute, shows the widget and hides it afterward. Instructions assert identical native rendering and recommend direct calls over mouse events. These do not establish displayed-row changes, preserve a live widget's state or verify normal input delivery. |
+| [pytest-qt](https://pytest-qt.readthedocs.io/en/latest/reference.html) | Input events, condition/signal waits, unique screenshots and managed widget cleanup. MIT licence. | These tools suffice for execution. The user must still connect the complaint to geometry, valid cases, before/after expectations and honest interpretation. Reuse them; a new test runner adds no demonstrated benefit. |
+| [pixel-perfect visual QA](https://github.com/Huc91/pixel-perfect-skill/blob/main/SKILL.md) | Reference-image review for web and React Native, covering visual dimensions and caveats. | Its stated execution routes are not Qt Widgets. A screenshot comparison alone cannot measure table viewport rows or establish a Qt control's effective visibility. Its licence was not found at the reviewed root; do not copy it on an assumption of permission. |
+| [Qt QWidget APIs](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html) | Geometry, visibility, approximate visible regions, hit lookup and widget rendering. | These already supply the measurements. QWidget visibility is not proof of physical exposure; visible-region bounds are not exact visible area. |
+
+SLEAP's reviewed root licence is [Clear BSD](https://github.com/talmolab/sleap/blob/develop/LICENSE); an upstream contribution must follow its applicable contribution/licensing rules. pytest-qt's [MIT licence](https://github.com/pytest-dev/pytest-qt/blob/main/LICENSE) permits reuse with its notice. This candidate uses the installed Qt APIs and documentation, without copying either implementation. Qt for Python has [separate licensing terms](https://doc.qt.io/qtforpython-6/licenses.html); this repository does not relicense the runtime.
+
+## Decision
+
+A small Qt-specific procedure and optional state-preserving evidence helper are useful. The synthetic examples demonstrate the gap: the setting and model count can remain correct while only three rows are displayed; intersections may be intentional; collapse can change a label without hiding content. The helper records image and measurements together without deciding which intersections are wrong.
+
+Prefer contributing these corrections and examples to qt-testing if its maintainers want this scope. The original candidate here is reviewable independently and requires no upstream installation. Existing Qt tools are sufficient; there is no justification for a separate Python package. Do not claim superior detection, unique capability, time savings or broad agent reliability from these fixtures. Behavioural comparison and exact execution evidence are reported with the release review, separately from what the underlying tools support.
+
+## Independent comparison
+
+Two independent agents received the same unseen synthetic workshop widget and the same request about a 2→5 job setting, Details, resizing, overlap, fonts and Mac display correctness. One used existing tools without this skill; the other read this skill and its resources. Both used the same installed Qt interpreter, offscreen mode and a read-only fixture in isolated temporary workspaces. Neither received the expected defect or the other agent's conclusions.
+
+Both diagnosed the unchanged two-row viewport, verified the working Details toggle, checked resizing, rejected harmless hidden/nested intersections as defects, found a clipped column heading and retained uncertainty about native appearance and the exact physical font. The baseline inspected seven screenshots and the skill-guided agent inspected six. Both produced runnable probes, measurements and reports. The skill-guided agent used the bundled snapshot helper and distinguished setting values from viewport results. These are two executed qualitative evaluations, not a benchmark or evidence of higher detection accuracy. Both preserved the fixture and closed owned windows.
+
+**Release recommendation: improve qt-testing first, rather than launch another standalone skill on a claim of superior verification.** Existing tools and a capable agent already solved this trial adequately. Keep this candidate as a concrete upstream-ready proposal for preserving widget state, normal-input verification, measurement reporting and explicit offscreen limits. A separate public identity would need further evidence of user value or an upstream scope/maintenance reason. No upstream contact, pull request or publication is authorized or performed by this review.
