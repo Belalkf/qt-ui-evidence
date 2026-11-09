@@ -1,6 +1,6 @@
 ---
 name: qt-ui-evidence
-description: Investigate Qt Widgets/PySide6 complaints about displayed rows, clipped or overlapping controls, and collapse or resize behavior using fresh screenshots, widget measurements and normal input. Use for complaint-driven Qt interface verification; not screenshot cloning, web UI, QML or native-display certification.
+description: Investigate Qt Widgets/PySide6 complaints about displayed rows, paragraph placement, clipped or overlapping controls, and collapse or resize behavior using fresh screenshots, widget measurements and normal input. Use for complaint-driven Qt interface verification; not screenshot cloning, web UI, QML or native-display certification.
 ---
 
 # Qt UI Evidence
@@ -27,6 +27,12 @@ Use existing screenshot/measurement tools when sufficient. The optional [snapsho
 Overlap is a candidate, not a verdict: intentional badges, child controls within parents and stacked pages can be correct. Hidden/collapsed controls and scrolling content are not automatically clipped defects. Compare ancestor clipping, hit testing, intended layout rules and the image. A geometric rectangle inside its parent does not prove the label fits; inspect the actual text rendering and use project-specific text metrics if needed.
 
 Include a nearby valid case in a regression so the check cannot pass merely by flagging every intersection. Reproduce the defect before the repair when feasible; add a regression for the demonstrated user-visible behavior. Do not weaken the expectation or alter unrelated sizing to manufacture success.
+
+## Locate paragraphs when text grouping matters
+
+For text that appears split, crowded, clipped or grouped with the wrong column, read [paragraph maps](references/paragraphs.md). Prefer Qt document structure and line geometry over guessing paragraph boundaries from pixels. The optional helper's `text_map=True` adds numbered bounds on a separate image and maps visible paragraphs in standard Qt text editors; `include_text=True` is a separate opt-in for source text. Review the original image as well as the map. Normal wrapping is not a paragraph split, and an unmapped region is not proof of missing text.
+
+When only an image or an unsupported text surface is available, use an existing OCR tool if useful and authorized. Label OCR groups as estimates, keep their coordinate transforms and word confidence distinct from semantic grouping, and retain failures as unknowns. Do not merge columns merely because words are close, infer hidden text from a crop, or add an OCR engine/dependency without need. The current helper does not run OCR automatically.
 
 ## Report evidence and limits
 

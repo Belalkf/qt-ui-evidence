@@ -98,3 +98,27 @@ class CaptureTests(GuiCase):
         data = json.loads((folder / 'measurements.json').read_text())
         self.assertEqual(data['schema'], 1)
         self.assertEqual(data['root_size'], [root.width(), root.height()])
+
+    def test_installed_skill_maps_text_without_the_source_tree(self):
+        import importlib.util
+        from qt_ui_evidence.install import install_skill
+        from PySide6.QtWidgets import QTextEdit
+        destination = install_skill(Path(self.temp.name) / 'installed')
+        spec = importlib.util.spec_from_file_location('installed_snapshot',
+                                                     destination / 'scripts/snapshot.py')
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        widget = self.show(QTextEdit())
+        widget.setPlainText('One synthetic paragraph\nA separate paragraph')
+        from tests.support import wait_for
+        wait_for(lambda: widget.document().begin().layout().lineCount() > 0)
+        folder = helper.capture(widget, {'body': widget}, Path(self.temp.name) / 'output',
+                                text_map=True)
+        data = json.loads((folder / 'measurements.json').read_text())
+        self.assertEqual(len(data['text_map']['regions']), 2)
+        self.assertTrue((folder / 'text-map.png').is_file())
+
+    def test_source_text_requires_an_explicit_map(self):
+        root = self.show(QWidget())
+        with self.assertRaises(ValueError):
+            snapshot.capture(root, {}, self.temp.name, include_text=True)

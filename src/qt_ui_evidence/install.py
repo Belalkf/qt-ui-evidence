@@ -7,7 +7,7 @@ import tempfile
 
 RESOURCE_FILES = (
     'SKILL.md', 'agents/openai.yaml', 'references/measurements.md',
-    'scripts/snapshot.py',
+    'scripts/snapshot.py', 'scripts/text_map.py', 'references/paragraphs.md',
 )
 
 

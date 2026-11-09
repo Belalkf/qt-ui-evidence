@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 
+from .text_compare import compare_maps, validate_map
+
 MAX_BYTES = 2_000_000
 FIELDS = ('rect_in_root', 'ancestor_intersection', 'visible', 'explicitly_hidden',
           'enabled', 'center_in_visible_region', 'center_hit_self_or_child')
@@ -35,6 +37,8 @@ def read_capture(path):
                         any(type(i) is not int or i < 0 for i in indices) or
                         len(indices) != len(set(indices))):
                     raise ValueError('Row indices must be unique nonnegative integer lists')
+    if "text_map" in data:
+        validate_map(data["text_map"])
     return data
 
 
@@ -74,6 +78,9 @@ def compare(before, after):
                                      'after': right.get('rows', {}).get('model_rows')}
         results[label] = {'changes': changes, 'row_counts': row_counts,
                          'row_context': row_context}
-    return {'schema': 1, 'environment_changes': differences,
+    result = {'schema': 1, 'environment_changes': differences,
             'root_size': {'before': before.get('root_size'), 'after': after.get('root_size')},
             'widgets': results, 'unknowns': unknowns}
+    if 'text_map' in before or 'text_map' in after:
+        result['text_map'] = compare_maps(before.get('text_map'), after.get('text_map'))
+    return result

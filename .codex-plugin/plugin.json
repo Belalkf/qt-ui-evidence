@@ -1,6 +1,6 @@
 {
   "name": "qt-ui-evidence",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Verify Qt Widgets complaints with screenshots, measurements and normal input.",
   "license": "MIT",
   "skills": "./skills/"

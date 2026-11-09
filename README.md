@@ -2,7 +2,7 @@
 
 Investigate a Qt/PySide6 interface complaint with fresh screenshots, actual widget measurements and normal control input. Compare the expected visible result before and after a repair, while keeping measurements, visual judgments and unknowns separate.
 
-The skill applies across unrelated Qt Widgets projects. It is not tied to a particular operating system, application, font or test framework. The Python tool compares captured measurements and optionally installs the skill into Codex; it does not automatically decide whether a layout is correct. Version **0.1.0** is an early release. See [scope and verification](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/support.md) and the [comparison with existing tools](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/alternatives.md).
+The skill applies across unrelated Qt Widgets projects. It is not tied to a particular operating system, application, font or test framework. The Python tool compares captured measurements and optionally installs the skill into Codex; it does not automatically decide whether a layout is correct. Version **0.2.0** is an early release. See [scope and verification](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/support.md) and the [comparison with existing tools](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/alternatives.md).
 
 ## Install
 
@@ -55,6 +55,19 @@ qt-ui-evidence compare before/capture-folder after/capture-folder
 ```
 
 The command prints JSON containing changes in full/partial vertical row counts, selected geometry, visibility and environment. Row identities, viewport size and scroll positions remain in the comparison so unchanged counts cannot hide a different scrolled view. Exit 0 means comparison completed, not that the interface passed. Missing measurements stay unknown; changed environments are reported. It never edits inputs or infers fonts, hidden contents, accessibility or native correctness. Inspect the matching screenshots separately.
+
+## Locate text paragraphs
+
+For a text-placement complaint, request a numbered map in the same capture:
+
+```python
+folder = capture(window, {"left": window.left_text, "right": window.right_text},
+                 evidence_directory, text_map=True)
+```
+
+This preserves `widget.png` and adds `text-map.png` with paragraph numbers and line bounds. The JSON identifies Qt paragraphs and reports wrapping, clipping and bounds in window coordinates; comparison retains their measured changes. Standard QTextEdit/QTextBrowser and QPlainTextEdit are supported. Source text stays out of JSON unless you also pass `include_text=True`; that explicit option may include a paragraph's offscreen text. Unsupported text surfaces and layouts stay unknown. See [paragraph maps and optional OCR](https://github.com/Belalkf/qt-ui-evidence/blob/main/skills/qt-ui-evidence/references/paragraphs.md).
+
+[See the original synthetic two-column example with numbered paragraphs](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/images/paragraph-map.png).
 
 ## Run the original synthetic examples
 
