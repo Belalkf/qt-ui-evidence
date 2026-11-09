@@ -1,5 +1,6 @@
 """Optional, in-process PySide6 QWidget evidence; no automatic defect verdicts."""
 
+import importlib.util
 import json
 import platform
 import tempfile
@@ -55,13 +56,15 @@ def table_rows(table, limit=10000):
             "status": "measured geometry; occlusion and cell contents unknown"}
 
 
-def capture(root, widgets, output_dir):
+def capture(root, widgets, output_dir, *, text_map=False, include_text=False):
     """Save selected widgets under caller labels; caller owns readiness/cleanup."""
     app = QApplication.instance()
     if app is None or QThread.currentThread() != app.thread():
         raise RuntimeError("Capture requires the QApplication UI thread")
     if not isinstance(root, QWidget) or not root.isVisible():
         raise ValueError("Root must be a visible QWidget; capture never shows it")
+    if include_text and not text_map:
+        raise ValueError("include_text requires text_map=True")
     selected = dict(widgets)
     for label, widget in selected.items():
         if not isinstance(label, str) or not label:
@@ -100,10 +103,20 @@ def capture(root, widgets, output_dir):
     if pixmap.isNull():
         raise RuntimeError("Qt returned an empty widget image")
     data["image_pixels"] = [pixmap.width(), pixmap.height()]
+    annotated = None
+    if text_map:
+        spec = importlib.util.spec_from_file_location(
+            "qt_evidence_text_map", Path(__file__).with_name("text_map.py"))
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        data["text_map"] = helper.paragraphs(root, selected, clipped_rect, include_text)
+        annotated = helper.annotate(pixmap, data["text_map"])
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     folder = Path(tempfile.mkdtemp(prefix="capture-", dir=str(output_dir)))
     if not pixmap.save(str(folder / "widget.png")):
         raise OSError("Could not save widget image; partial folder retained")
+    if annotated is not None and not annotated.save(str(folder / "text-map.png")):
+        raise OSError("Could not save text map; partial folder retained")
     (folder / "measurements.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
     return folder

@@ -31,7 +31,7 @@ qtbot.waitUntil(
 after = snapshot.capture(widget, {"table": widget.table}, evidence_dir)
 ```
 
-The caller must also wait for the expected rendered geometry, not just the setting value. Prefer `qtbot.screenshot` plus local assertions if they already provide sufficient evidence. The helper adds a matching JSON record with environment, root size, selected geometry, visibility, hit-point facts and table row indices; it exports no widget text or object names. The image still contains all rendered content, including potentially private data: use synthetic inputs or keep evidence private.
+The caller must also wait for the expected rendered geometry, not just the setting value. Prefer `qtbot.screenshot` plus local assertions if they already provide sufficient evidence. The helper adds a matching JSON record with environment, root size, selected geometry, visibility, hit-point facts and table row indices; it exports no widget text or object names in the default capture. The optional [paragraph map](paragraphs.md) has a separate, explicit source-text option. The image still contains all rendered content, including potentially private data: use synthetic inputs or keep evidence private.
 
 Each call creates a unique `capture-*` folder containing `widget.png` and `measurements.json`; no filename derives from labels. Repeated calls preserve earlier files. An I/O failure raises and may leave partial evidence, which is not a completed capture. Caller-owned cleanup should remove only known temporary artifacts when no longer needed. Do not delete the user's evidence automatically.
 

@@ -20,7 +20,7 @@ jobs:
       - run: python -m pip install build setuptools==68.0.0 wheel
       - run: python -m build --no-isolation
       - run: python -m pip install --no-deps dist/*.whl
-      - run: python -m unittest tests.test_compare tests.test_install -v
+      - run: python -m unittest tests.test_compare tests.test_text_compare tests.test_install -v
       - run: qt-ui-evidence --version
   qt:
     name: Qt (${{ matrix.os }}, ${{ matrix.runtime.python }}, ${{ matrix.runtime.qt }})

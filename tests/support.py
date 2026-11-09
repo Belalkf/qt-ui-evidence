@@ -55,9 +55,9 @@ class GuiCase(unittest.TestCase):
         wait_for(lambda: widget.isVisible() and widget.width() > 0)
         return widget
 
-    def capture(self, widget, selected, name):
+    def capture(self, widget, selected, name, **options):
         base = Path(os.environ.get('QT_EVIDENCE_OUTPUT', self.temp.name))
-        return snapshot.capture(widget, selected, base / name)
+        return snapshot.capture(widget, selected, base / name, **options)
 
     def click(self, root, button):
         self.assertTrue(button.isVisible() and button.isEnabled())

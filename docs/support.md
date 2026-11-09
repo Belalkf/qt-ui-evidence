@@ -1,6 +1,6 @@
 # Scope, compatibility and verification
 
-Version **0.1.0** is an early release for ordinary Qt Widgets/PySide6 interfaces across unrelated applications. The skill's method is platform-independent: it uses each project's normal test tools and asks for evidence appropriate to the complaint. The execution record below says where this release was checked; it does not restrict the skill to that machine or require every reader to reproduce its exact versions.
+Version **0.2.0** is an early release for ordinary Qt Widgets/PySide6 interfaces across unrelated applications. The skill's method is platform-independent: it uses each project's normal test tools and asks for evidence appropriate to the complaint. The execution record below says where this release was checked; it does not restrict the skill to that machine or require every reader to reproduce its exact versions.
 
 ## Intended compatibility
 
@@ -23,6 +23,14 @@ No private application code or assets were used. Native desktop appearance, font
 QML/Qt Quick, OpenGL, embedded native widgets, video, tree/list/custom-delegate row counting and precise text-fit analysis are outside the helper. Their own capture/measurement tools are required. Arbitrary application factories and attaching to running processes are not provided.
 
 A full vertical row can still contain clipped or obscured cells. Rectangular ancestor intersections ignore masks; visible-region bounds discard holes and Qt visibility is not proof of physical screen exposure. Above 10,000 model rows the row helper returns unknown instead of scanning indefinitely. Images and measurements are sequential observations, so callers must wait for a stable state. The comparison command reports these facts; it never decides whether a particular intersection is a defect.
+
+## Paragraph-map support
+
+Paragraph mapping is optional and off by default. It supports standard QTextEdit/QTextBrowser and QPlainTextEdit documents, including normal wrapping, alignment and mixed text directions. It maps visible/intersecting line layout to the captured root, reports partial clipping and adds a numbered companion image. Empty or wholly outside-view blocks are excluded. Nested frames/tables, inline objects, custom document layouts and other text widgets remain explicitly unmapped. It changes no document, cursor, focus or scroll setting; a regression protects QPlainTextEdit's lazy layout from changing the scroll range during measurement.
+
+Local synthetic checks exercised two columns, resize/restoration, rich text, right-to-left content, scrolling, partial clipping, scan limits, source-text privacy, image preservation and simulated DPR 1/2 with PySide6 6.10.3. These are layout bounds, not exact painted glyph outlines or native-display acceptance. Block numbers are not stable identities across edits. The comparison command keeps grouping sources and missing-map uncertainty, and does not copy source text into its output.
+
+The OCR route uses existing tools rather than a new runtime dependency or automatic merger. A local Tesseract 5.5.1/English trial grouped a five-paragraph, two-column fixture into two groups that mixed columns; English language data also did not reliably read the mixed Arabic text. This is a concrete reason to keep OCR grouping as an estimate, not a verdict or a substitute for available Qt structure. The helper does not run OCR, install language data or send images anywhere. Other OCR engines/languages were not tested.
 
 ## Distribution
 
