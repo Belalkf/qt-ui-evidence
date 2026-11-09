@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15, windows-latest]
+        os: [ubuntu-24.04, macos-15-intel, windows-latest]
         runtime:
           - {python: '3.9', qt: '6.5.0'}
           - {python: '3.13', qt: '6.10.3'}
@@ -47,3 +47,15 @@ jobs:
       - run: python -m unittest discover -s tests -t . -v
         env:
           QT_QPA_PLATFORM: offscreen
+  ci:
+    name: CI
+    needs: [package, qt]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require every test job
+        env:
+          PACKAGE_RESULT: ${{ needs.package.result }}
+          QT_RESULT: ${{ needs.qt.result }}
+        run: test "$PACKAGE_RESULT" = success && test "$QT_RESULT" = success

@@ -2,7 +2,7 @@
 
 Investigate a Qt/PySide6 interface complaint with fresh screenshots, actual widget measurements and normal control input. Compare the expected visible result before and after a repair, while keeping measurements, visual judgments and unknowns separate.
 
-The skill applies across unrelated Qt Widgets projects. It is not tied to a particular operating system, application, font or test framework. The Python tool compares captured measurements and optionally installs the skill into Codex; it does not automatically decide whether a layout is correct. Version **0.1.0** is an early release. See [scope and verification](docs/support.md) and the [comparison with existing tools](docs/alternatives.md).
+The skill applies across unrelated Qt Widgets projects. It is not tied to a particular operating system, application, font or test framework. The Python tool compares captured measurements and optionally installs the skill into Codex; it does not automatically decide whether a layout is correct. Version **0.1.0** is an early release. See [scope and verification](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/support.md) and the [comparison with existing tools](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/alternatives.md).
 
 ## Install
 
@@ -46,7 +46,7 @@ before = capture(window, {"table": window.table}, evidence_directory)
 after = capture(window, {"table": window.table}, evidence_directory)
 ```
 
-Capture requires an existing QApplication and its UI thread. It never shows hidden windows or changes their values, size or display mode. Each call creates a new folder containing `widget.png` and `measurements.json`; earlier evidence is preserved. The image can still contain private content: use synthetic data or keep it private. See [measurement and capture limits](skills/qt-ui-evidence/references/measurements.md).
+Capture requires an existing QApplication and its UI thread. It never shows hidden windows or changes their values, size or display mode. Each call creates a new folder containing `widget.png` and `measurements.json`; earlier evidence is preserved. The image can still contain private content: use synthetic data or keep it private. See [measurement and capture limits](https://github.com/Belalkf/qt-ui-evidence/blob/main/skills/qt-ui-evidence/references/measurements.md).
 
 Compare the two saved folders:
 
@@ -54,7 +54,7 @@ Compare the two saved folders:
 qt-ui-evidence compare before/capture-folder after/capture-folder
 ```
 
-The command prints JSON containing changes in full/partial vertical row counts, selected geometry, visibility and environment. Exit 0 means comparison completed, not that the interface passed. Missing measurements stay unknown; changed environments are reported. It never edits inputs or infers fonts, hidden contents, accessibility or native correctness. Inspect the matching screenshots separately.
+The command prints JSON containing changes in full/partial vertical row counts, selected geometry, visibility and environment. Row identities, viewport size and scroll positions remain in the comparison so unchanged counts cannot hide a different scrolled view. Exit 0 means comparison completed, not that the interface passed. Missing measurements stay unknown; changed environments are reported. It never edits inputs or infers fonts, hidden contents, accessibility or native correctness. Inspect the matching screenshots separately.
 
 ## Run the original synthetic examples
 
@@ -66,10 +66,10 @@ QT_QPA_PLATFORM=offscreen python -m unittest discover -s tests -t . -v
 
 Select `offscreen` explicitly before QApplication is created. On PowerShell, set `$env:QT_QPA_PLATFORM='offscreen'` before running Python. The tests cover a row preference that changes without revealing more rows, misplaced controls and nonworking collapse behavior, alongside corrected variants and valid layouts. They close owned windows and normally clean temporary captures. Set `QT_EVIDENCE_OUTPUT` to your chosen folder to retain unique evidence folders. Interrupt with Ctrl-C; only the foreground test process is owned by the run.
 
-Both row screenshots have the setting at 6: [before](docs/images/rows-before.png) shows 3 rows; [after](docs/images/rows-after.png) shows 6. The station examples show [clipped/overlapping controls](docs/images/layout-before.png) and [the working layout](docs/images/layout-after.png), including an intentional child badge. These are synthetic offscreen examples, not native-display acceptance.
+Both row screenshots have the setting at 6: [before](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/images/rows-before.png) shows 3 rows; [after](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/images/rows-after.png) shows 6. The station examples show [clipped/overlapping controls](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/images/layout-before.png) and [the working layout](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/images/layout-after.png), including an intentional child badge. These are synthetic offscreen examples, not native-display acceptance.
 
 ## Contribution and limits
 
-Existing Qt tools already perform input, waits and capture. This project adds a complaint-driven procedure and repeatable evidence records; its independent baseline trial did not demonstrate better detection than a capable agent using those tools. Improvements can also be contributed to qt-testing. See [the evidence and decision](docs/alternatives.md#independent-comparison).
+Existing Qt tools already perform input, waits and capture. This project adds a complaint-driven procedure and repeatable evidence records; its independent baseline trial did not demonstrate better detection than a capable agent using those tools. Improvements can also be contributed to qt-testing. See [the evidence and decision](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/alternatives.md#independent-comparison).
 
-QML, OpenGL, video and native embedded surfaces are outside this capture helper. Screenshot-only font identification and native display certification are not supported. [Support](docs/support.md) distinguishes intended compatibility from environments actually tested. [Contributing](CONTRIBUTING.md) and [security reporting](SECURITY.md) describe maintenance and safe examples. Original files are MIT licensed; Qt and other dependencies retain their own licences.
+QML, OpenGL, video and native embedded surfaces are outside this capture helper. Screenshot-only font identification and native display certification are not supported. [Support](https://github.com/Belalkf/qt-ui-evidence/blob/main/docs/support.md) distinguishes intended compatibility from environments actually tested. [Contributing](https://github.com/Belalkf/qt-ui-evidence/blob/main/CONTRIBUTING.md) and [security reporting](https://github.com/Belalkf/qt-ui-evidence/blob/main/SECURITY.md) describe maintenance and safe examples. Original files are MIT licensed; Qt and other dependencies retain their own licences.

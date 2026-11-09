@@ -87,3 +87,16 @@ class ComparisonTests(unittest.TestCase):
                          ['row_counts']['full_vertical_rows']['delta'], 3)
         with contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(main(['compare', str(before), str(self.folder/'missing')]), 2)
+
+    def test_scroll_context_is_kept_when_row_counts_match(self):
+        before, after = record(), record(rows=(3, 4, 5))
+        before['widgets']['table']['rows'].update(
+            vertical_scroll=0, horizontal_scroll=0, viewport=[0, 0, 300, 90])
+        after['widgets']['table']['rows'].update(
+            vertical_scroll=90, horizontal_scroll=0, viewport=[0, 0, 300, 90])
+        result = compare(before, after)['widgets']['table']
+        self.assertEqual(result['row_counts']['full_vertical_rows']['delta'], 0)
+        self.assertEqual(result['row_context']['vertical_scroll'],
+                         {'before': 0, 'after': 90})
+        self.assertEqual(result['row_context']['full_vertical_rows'],
+                         {'before': [0, 1, 2], 'after': [3, 4, 5]})
