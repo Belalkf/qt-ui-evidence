@@ -1,36 +1,29 @@
-# Supported scope and release limits
+# Scope, compatibility and verification
 
-Version: **0.1.0-rc.1**, experimental, prepared for review rather than public publication. The supported workflow is an agent inspecting ordinary Qt Widgets/PySide6 in a trusted application test process. The optional helper captures a selected QWidget and measures selected descendants; the vertical row counter supports standard QTableView/QTableWidget section geometry only.
+Version **0.1.0** is an early release for ordinary Qt Widgets/PySide6 interfaces across unrelated applications. The skill's method is platform-independent: it uses each project's normal test tools and asks for evidence appropriate to the complaint. The execution record below says where this release was checked; it does not restrict the skill to that machine or require every reader to reproduce its exact versions.
 
-## Executed environment
+## Intended compatibility
 
-| Component | Verified locally |
-| --- | --- |
-| OS / hardware | macOS 14.8.9, Apple Silicon arm64 |
-| Python | CPython 3.9.6, Clang 16 build |
-| Binding / Qt | PySide6 6.10.3 / Qt 6.10.3 |
-| Rendering | Explicit `QT_QPA_PLATFORM=offscreen`, Fusion style, device pixel ratio 1 |
-| Test tools | Python unittest and PySide6.QtTest, with existing installed dependencies |
-| Skill host | Codex skill format validated; explicit-path independent agent evaluation |
+The Python comparison/installation command supports Python 3.9+ on macOS, Linux and Windows and uses only the standard library. The optional capture helper uses public Qt Widgets APIs through PySide6 6.5–6.x; the `qt` extra requests that range. Projects can use their existing compatible PySide6 installation. The skill itself is Markdown and can be used without installing the Python distribution.
 
-This is the tested combination, not a promise covering all Python 3.9+, Qt versions, machines or styles. Python 3.9 is end-of-life upstream; it is recorded because it was the available test interpreter, not recommended for new deployments. Newer Python, Windows, Linux, native Cocoa rendering, Retina/other scaling, physical screens and automatic fresh-session skill discovery remain unverified. The prepared macOS GitHub workflow has not run. pytest-qt integration is documented using its public API, but pytest-qt itself was not installed or executed for this candidate.
+The snapshot helper measures standard QTableView/QTableWidget vertical row sections, selected widget geometry and effective visibility. It runs in the application's trusted test process. QtTest or pytest-qt handles interaction and waiting; neither toolkit input events nor a screenshot certify OS-level pointer routing.
 
-No runtime was downloaded or product environment modified for local verification. A pre-existing interpreter provided PySide6; tests ran in a separate synthetic repository and a clean external copy, with no product imports. No private application code or assets were used.
+## Execution evidence
 
-## Covered behavior
+The initial local Qt run used macOS 14.8.9 arm64, CPython 3.9.6, PySide6/Qt 6.10.3, explicitly selected offscreen rendering, Fusion style and DPR 1. Python-only commands and built package resources were also exercised on CPython 3.11.11 without Qt. The oldest declared Python/build-tool combination was used to build the distribution. Hosted matrix results are visible in [Actions](https://github.com/Belalkf/qt-ui-evidence/actions); a configured job is not a completed check.
 
-The regression suite exercises changed preference versus displayed rows, full versus partial/scrolled/hidden/empty rows, a small valid dataset, an explicit scan limit, deliberate overlap and clipping, valid nested decoration, collapse/expand and resize round trips. Capture checks cover repeated outputs without overwrites, preserved visibility/size/display attributes, Unicode labels, hidden/foreign/separate-window rejection, failed output saves and nested capture coordinates. The nested-coordinate defect was reproduced with a failing test before its repair.
+The suite covers ineffective row preferences, full/partial/scrolled/hidden/empty rows, small valid datasets, scan limits, intentional and accidental intersections, clipping, collapse/expand and resize round trips. Capture checks cover preserved state and outputs, Unicode, rejected hidden/foreign/separate-window input, save failures, nested coordinates and UI-thread ownership. Comparison and installation tests cover invalid records, unknowns, different environments, input preservation, packaged resources and existing-installation refusal.
 
-Fresh synthetic images were inspected for the row and layout comparisons, collapsed state and narrow/wide states. Visible interpretation remains separate from assertions: an image save is not a visual pass. Runtime logs include expected offscreen `propagateSizeHints` warnings and a missing generic font alias warning; no native-equivalence claim follows from them.
+Twelve initial widget/helper tests passed outside the original project and from the extracted candidate. The public package adds comparison and installation checks. A nested-coordinate defect was reproduced with a failing test before repair; malformed/duplicate row records also have failing-before regressions. Original synthetic before/after images were inspected, including collapsed and narrow/wide states. The [independent comparison](alternatives.md#independent-comparison) records actual agent behavior and does not claim superior detection or measured time savings.
 
-## Not covered
+No private application code or assets were used. Native desktop appearance, fonts, Retina/scaling, accessibility, physical displays and automatic discovery in every agent host remain unverified. pytest-qt's public API is documented but was not executed locally. Offscreen logs can include platform/font warnings; success does not prove native equivalence. Python 3.9 is retained for existing environments; prefer a maintained Python version for new setups.
 
-QML/Qt Quick, OpenGL, embedded native widgets, video, tree/list/custom-delegate row counting, precise text-fit analysis, accessibility, native pointer routing, multi-screen placement, async application startup and arbitrary existing application factories are outside the helper's supported scope. QtTest verifies Qt event handling, not physical mouse delivery. Very large tables return unknown above the scan cap. Captures are sequential observations, not an atomic frame/geometry transaction; callers must wait for a stable state.
+## Measurement limits
 
-The helper is not an automatic layout detector and has no attach-to-process command. Rectangular ancestor intersections and visible-region bounds do not prove all pixels are exposed. Full vertical rows can still contain horizontally clipped or obscured cells. Widget images can differ from what a user sees on a physical display. Unsupported content must be reported as unknown or captured using its own suitable tools.
+QML/Qt Quick, OpenGL, embedded native widgets, video, tree/list/custom-delegate row counting and precise text-fit analysis are outside the helper. Their own capture/measurement tools are required. Arbitrary application factories and attaching to running processes are not provided.
 
-## Distribution acceptance
+A full vertical row can still contain clipped or obscured cells. Rectangular ancestor intersections ignore masks; visible-region bounds discard holes and Qt visibility is not proof of physical screen exposure. Above 10,000 model rows the row helper returns unknown instead of scanning indefinitely. Images and measurements are sequential observations, so callers must wait for a stable state. The comparison command reports these facts; it never decides whether a particular intersection is a defect.
 
-The self-contained install folder is `skills/qt-ui-evidence`. Repository documentation, tests and synthetic examples are not runtime dependencies. A minimal `.codex-plugin/plugin.json` prepares a plugin envelope following [official packaging guidance](https://developers.openai.com/plugins/build/plugins), without connectors, credentials, hooks or invented publisher details. It has not been uploaded, installed as a plugin, reviewed by a directory or accepted by a marketplace.
+## Distribution
 
-Public repository destination, publisher identity and final distribution route need owner review. Hosted checks, branch protection, private vulnerability reporting, dependency/secret scanning and remote-tip verification are pending publication-stage work. No remote exists for this candidate. A local archive and commit establish a review boundary, not a public release or PyPI availability.
+The Python wheel bundles the complete skill from the same source folder; the helper is not maintained twice. `pip install` installs the tool only; `install-skill` is an explicit separate action. The GitHub install folder remains `skills/qt-ui-evidence`. A minimal plugin envelope is provided, but no plugin-directory acceptance or universal host compatibility is claimed. [Official packaging guidance](https://developers.openai.com/plugins/build/plugins) describes that separate distribution route.

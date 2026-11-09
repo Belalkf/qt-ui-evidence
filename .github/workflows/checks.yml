@@ -1,19 +1,46 @@
-name: Synthetic Qt checks
+name: Checks
 on: [push, pull_request]
 permissions:
   contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  qt-offscreen:
-    runs-on: macos-14
+  package:
+    name: Package and CLI
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.9'
-      - run: python -m pip install PySide6==6.10.3
+      - run: python -m pip install build setuptools==68.0.0 wheel
+      - run: python -m build --no-isolation
+      - run: python -m pip install --no-deps dist/*.whl
+      - run: python -m unittest tests.test_compare tests.test_install -v
+      - run: qt-ui-evidence --version
+  qt:
+    name: Qt (${{ matrix.os }}, ${{ matrix.runtime.python }}, ${{ matrix.runtime.qt }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14, windows-latest]
+        runtime:
+          - {python: '3.9', qt: '6.5.0'}
+          - {python: '3.13', qt: '6.10.3'}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.runtime.python }}
+      - run: python -m pip install . PySide6==${{ matrix.runtime.qt }}
       - run: python -m unittest discover -s tests -t . -v
         env:
           QT_QPA_PLATFORM: offscreen

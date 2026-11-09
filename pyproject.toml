@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qt-ui-evidence"
+version = "0.1.0"
+description = "Qt interface evidence: screenshots, geometry and measured before/after comparisons"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "Belal Alkufri"}]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Testing",
+]
+
+[project.optional-dependencies]
+qt = ["PySide6>=6.5,<7"]
+
+[project.scripts]
+qt-ui-evidence = "qt_ui_evidence.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Belalkf/qt-ui-evidence"
+Issues = "https://github.com/Belalkf/qt-ui-evidence/issues"
+
+[tool.setuptools]
+include-package-data = false
+packages = ["qt_ui_evidence", "qt_ui_evidence._skill"]
+package-dir = {qt_ui_evidence = "src/qt_ui_evidence", "qt_ui_evidence._skill" = "skills/qt-ui-evidence"}
+
+[tool.setuptools.package-data]
+"qt_ui_evidence._skill" = ["SKILL.md", "agents/*.yaml", "references/*.md", "scripts/*.py"]

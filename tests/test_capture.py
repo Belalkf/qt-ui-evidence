@@ -90,3 +90,11 @@ class CaptureTests(GuiCase):
         self.assertFalse(worker.is_alive())
         self.assertEqual(len(failures), 1)
         self.assertIn('UI thread', failures[0])
+
+    def test_public_package_capture_uses_same_evidence_contract(self):
+        from qt_ui_evidence import capture
+        root = self.show(QWidget())
+        folder = capture(root, {'root': root}, self.temp.name)
+        data = json.loads((folder / 'measurements.json').read_text())
+        self.assertEqual(data['schema'], 1)
+        self.assertEqual(data['root_size'], [root.width(), root.height()])
