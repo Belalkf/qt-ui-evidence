@@ -59,7 +59,12 @@ def compare(before, after):
         changes = {key: {'before': left.get(key), 'after': right.get(key)}
                    for key in FIELDS if left.get(key) != right.get(key)}
         row_counts = {}
+        row_context = {}
         if 'rows' in left or 'rows' in right:
+            for field in ('viewport', 'vertical_scroll', 'horizontal_scroll',
+                          'full_vertical_rows', 'partial_vertical_rows'):
+                row_context[field] = {'before': left.get('rows', {}).get(field),
+                                      'after': right.get('rows', {}).get(field)}
             for field in ('full_vertical_rows', 'partial_vertical_rows'):
                 a, b = left.get('rows', {}).get(field), right.get('rows', {}).get(field)
                 row_counts[field] = ({'before': len(a), 'after': len(b), 'delta': len(b)-len(a)}
@@ -67,7 +72,8 @@ def compare(before, after):
                                      else {'status': 'unknown: row measurement unavailable'})
             changes['model_rows'] = {'before': left.get('rows', {}).get('model_rows'),
                                      'after': right.get('rows', {}).get('model_rows')}
-        results[label] = {'changes': changes, 'row_counts': row_counts}
+        results[label] = {'changes': changes, 'row_counts': row_counts,
+                         'row_context': row_context}
     return {'schema': 1, 'environment_changes': differences,
             'root_size': {'before': before.get('root_size'), 'after': after.get('root_size')},
             'widgets': results, 'unknowns': unknowns}

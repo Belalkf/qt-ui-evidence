@@ -58,3 +58,14 @@ class SkillInstallationTests(unittest.TestCase):
         self.assertTrue((self.folder/'.agents/skills/qt-ui-evidence/SKILL.md').exists())
         with contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(main(['install-skill', '--project', str(self.folder)]), 2)
+
+    def test_published_readme_links_work_outside_the_repository(self):
+        import re
+        from importlib.metadata import metadata
+        info = metadata('qt-ui-evidence')
+        description = info.get('Description') or info.get_payload()
+        self.assertTrue(description)
+        links = re.findall(r'\]\(([^)]+)\)', description)
+        self.assertTrue(links)
+        for link in links:
+            self.assertTrue(link.startswith(('https://', '#')), link)
